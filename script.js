@@ -102,6 +102,31 @@ function createColorSwatch(rgbArray, isSelected = false) {
     return swatch;
 }
 
+// Clear uploaded logo
+function clearLogo() {
+    // Reset file input
+    document.getElementById('logoUpload').value = '';
+    
+    // Clear preview
+    document.getElementById('logoPreview').innerHTML = '';
+    
+    // Hide color palette
+    document.getElementById('colorPalette').style.display = 'none';
+    
+    // Reset uploaded data
+    uploadedImageData = null;
+    
+    // Reset preview logo to initials
+    const businessName = document.getElementById('businessName').value;
+    const words = businessName.split(' ');
+    const initials = words.map(word => word.charAt(0)).join('').substring(0, 3).toUpperCase();
+    document.getElementById('previewLogo').textContent = initials || 'YB';
+    
+    // Reset theme to default
+    updateTheme('#2563eb', '#1d4ed8');
+    document.getElementById('themeIndicator').textContent = 'Current theme: Default Blue (#2563eb)';
+}
+
 // Generate complete SmartLinks code with proper logo handling
 function generateSmartLinksCode() {
     const businessName = document.getElementById('businessName').value || 'Your Business';
@@ -501,24 +526,21 @@ document.getElementById('logoUpload').addEventListener('change', function(e) {
         reader.onload = function(e) {
             uploadedImageData = e.target.result;
             const logoPreview = document.getElementById('logoPreview');
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "Logo preview";
-            img.style.maxWidth = '120px';
-            img.style.maxHeight = '80px';
-            img.style.borderRadius = '8px';
-            img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
             
-            logoPreview.innerHTML = '';
-            logoPreview.appendChild(img);
-            
-            // Show logo URL input
-            document.getElementById('logoUrlGroup').style.display = 'block';
+            // Create preview with delete button
+            logoPreview.innerHTML = `
+                <div style="position: relative; display: inline-block;">
+                    <img src="${e.target.result}" alt="Logo preview" style="max-width: 120px; max-height: 80px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <button onclick="clearLogo()" style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+                </div>
+            `;
             
             // Update preview with uploaded image
             document.getElementById('previewLogo').innerHTML = 
                 `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">`;
             
+            // Extract colors
+            const img = logoPreview.querySelector('img');
             img.onload = function() {
                 extractColors(this);
             };
@@ -539,14 +561,8 @@ function resetForm() {
     document.getElementById('emergency').value = '24/7 Emergency Service Available';
     document.getElementById('logoUrl').value = '';
     
-    document.getElementById('logoPreview').innerHTML = '';
-    document.getElementById('previewLogo').innerHTML = 'FPP';
-    document.getElementById('colorPalette').style.display = 'none';
-    document.getElementById('logoUrlGroup').style.display = 'none';
-    uploadedImageData = null;
-    
-    updateTheme('#2563eb', '#1d4ed8');
-    document.getElementById('themeIndicator').textContent = 'Current theme: Default Blue (#2563eb)';
+    // Clear logo
+    clearLogo();
     
     updatePreview();
 }
