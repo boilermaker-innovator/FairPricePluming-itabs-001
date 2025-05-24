@@ -187,27 +187,102 @@ body {
     white-space: nowrap;
 }
 
+/* Logo Shape Selection */
+.logo-shape-group {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.logo-shape-group label {
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.logo-shape-options {
+    display: flex;
+    gap: 20px;
+}
+
+.shape-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.shape-option:hover {
+    background-color: #f1f5f9;
+}
+
+.shape-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.shape-preview {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #cbd5e1;
+    margin-bottom: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.shape-square {
+    border-radius: 8px;
+}
+
+.shape-rectangle {
+    width: 50px;
+    height: 30px;
+    border-radius: 6px;
+}
+
+.shape-option input[type="radio"]:checked + .shape-preview {
+    border-color: var(--primary-color, #2563eb);
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.shape-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.shape-option input[type="radio"]:checked ~ .shape-label {
+    color: var(--primary-color, #2563eb);
+    font-weight: 600;
+}
+
 /* Logo URL Input */
 .logo-url-group {
     margin-top: 15px;
     padding: 15px;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
     border-radius: 8px;
 }
 
 .logo-url-group label {
-    color: #9a3412;
+    color: #0369a1;
     font-size: 14px;
     margin-bottom: 8px;
 }
 
 .logo-url-group input {
-    border-color: #fed7aa;
+    border-color: #bae6fd;
 }
 
 .logo-url-group small {
-    color: #9a3412;
+    color: #0369a1;
     font-size: 12px;
     display: block;
     margin-top: 5px;
