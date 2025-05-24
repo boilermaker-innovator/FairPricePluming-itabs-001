@@ -139,18 +139,29 @@ function generateSmartLinksCode() {
     const emergency = document.getElementById('emergency').value || 'Your hours';
     const logoUrl = document.getElementById('logoUrl').value;
     
-    // Determine logo display method
+    // Get selected logo shape
+    const logoShape = document.querySelector('input[name="logoShape"]:checked').value;
+    
+    // Determine logo dimensions based on shape
+    const logoDimensions = logoShape === 'rectangle' ? 
+        { width: '80px', height: '50px' } : 
+        { width: '60px', height: '60px' };
+    
+    // Determine logo display method - FIXED LOGIC
     let logoHtml, showLogoWarning;
+    
+    // Priority 1: If user provided a logo URL, use it
     if (logoUrl && logoUrl.trim()) {
-        // Use provided logo URL
-        logoHtml = `<img src="${logoUrl}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" alt="${businessName} logo">`;
+        logoHtml = `<img src="${logoUrl.trim()}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" alt="${businessName} logo">`;
         showLogoWarning = false;
-    } else if (uploadedImageData) {
-        // Show placeholder with warning
+    } 
+    // Priority 2: If image uploaded but no URL provided, show placeholder with warning
+    else if (uploadedImageData) {
         logoHtml = `<img src="LOGO-URL-HERE" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" alt="${businessName} logo">`;
         showLogoWarning = true;
-    } else {
-        // Use business initials
+    } 
+    // Priority 3: No image uploaded, use business initials
+    else {
         logoHtml = businessName.split(' ').map(word => word.charAt(0)).join('').substring(0, 3).toUpperCase();
         showLogoWarning = false;
     }
@@ -160,11 +171,17 @@ function generateSmartLinksCode() {
         ? servicesList.map(service => `                    <li>${service.replace(/^[•\-\*]\s*/, '')}</li>`).join('\n')
         : '                    <li>Your services here</li>';
 
-    // Show/hide logo warning
+    // Show/hide logo warning in modal
     const logoWarningElement = document.getElementById('logoWarning');
     if (logoWarningElement) {
         logoWarningElement.style.display = showLogoWarning ? 'block' : 'none';
     }
+
+    // Debug logging
+    console.log('Logo URL from field:', logoUrl);
+    console.log('Generated logo HTML:', logoHtml);
+    console.log('Logo shape:', logoShape);
+    console.log('Show warning:', showLogoWarning);
 
     return `<!-- SmartLinks by iTabs - ${businessName} -->
 <style>
@@ -187,14 +204,14 @@ function generateSmartLinksCode() {
     gap: 15px;
 }
 .smartlinks-logo {
-    width: 60px;
-    height: 60px;
+    width: ${logoDimensions.width};
+    height: ${logoDimensions.height};
     background: white;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: ${logoShape === 'rectangle' ? '18px' : '24px'};
     color: ${currentPrimaryColor};
     font-weight: bold;
 }
@@ -264,7 +281,11 @@ function generateSmartLinksCode() {
 @media (max-width: 600px) {
     .smartlinks-widget { margin: 10px; }
     .smartlinks-header { padding: 15px; }
-    .smartlinks-logo { width: 50px; height: 50px; font-size: 20px; }
+    .smartlinks-logo { 
+        width: ${logoShape === 'rectangle' ? '70px' : '50px'}; 
+        height: ${logoShape === 'rectangle' ? '44px' : '50px'}; 
+        font-size: ${logoShape === 'rectangle' ? '16px' : '20px'}; 
+    }
     .smartlinks-business-info h3 { font-size: 16px; }
     .smartlinks-tab { padding: 10px 12px; font-size: 14px; }
 }
