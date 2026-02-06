@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch & Give — Setup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FDFAF6;
+            --bg-card: #FFFFFF;
+            --bg-input: #F7F3EE;
+            --bg-hover: #F0EBE3;
+            --accent: #C75B2A;
+            --accent-soft: rgba(199, 91, 42, 0.1);
+            --green: #2D6A4F;
+            --green-soft: rgba(45, 106, 79, 0.1);
+            --text: #2C1810;
+            --text-dim: #6B5744;
+            --text-muted: #9C8B7A;
+            --border: #E8DDD0;
+            --border-focus: #C75B2A;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.06);
+            --shadow-lg: 0 8px 30px rgba(44, 24, 16, 0.12);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --red: #DC2626;
+            --red-soft: rgba(220, 38, 38, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 580px;
+            margin: 0 auto;
+            padding: 20px 20px 100px;
+        }
+
+        /* ── Header ── */
+        .header { text-align: center; padding: 28px 0 32px; }
+        .header-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--accent-soft); color: var(--accent);
+            font-size: 11px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 14px;
+        }
+        .header-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+        .header h1 { font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 600; margin-bottom: 6px; }
+        .header p { color: var(--text-dim); font-size: 0.92rem; max-width: 360px; margin: 0 auto; }
+
+        /* ── Sections ── */
+        .section { margin-bottom: 28px; }
+        .section-label {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.2px; color: var(--text-muted); margin-bottom: 12px; padding-left: 2px;
+        }
+        .section-label .num {
+            width: 20px; height: 20px; background: var(--accent); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;
+        }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+        .card-body { padding: 18px; }
+
+        /* ── Inputs ── */
+        .input-group { margin-bottom: 14px; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 13px; font-weight: 500; color: var(--text-dim); margin-bottom: 5px; padding-left: 2px;
+        }
+        .input-label .optional { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+        .input-field {
+            width: 100%; padding: 12px 14px; background: var(--bg-input);
+            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+            color: var(--text); font-family: inherit; font-size: 14px;
+            transition: all 0.2s ease; outline: none;
+        }
+        .input-field::placeholder { color: var(--text-muted); }
+        .input-field:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .input-field.mono { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* ── URL ── */
+        .url-wrapper { position: relative; }
+        .url-wrapper .input-field { padding-right: 42px; }
+        .url-check {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; opacity: 0; transition: all 0.25s ease;
+        }
+        .url-check.valid { opacity: 1; background: var(--green-soft); color: var(--green); }
+        .url-check.invalid { opacity: 1; background: var(--red-soft); color: var(--red); }
+
+        /* ── Small video thumbnail ── */
+        .video-preview-sm { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); display: none; animation: slideUp 0.25s ease; }
+        .video-preview-sm.show { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .preview-thumb-sm { width: 100%; aspect-ratio: 16/9; background: #1a1a1a; position: relative; overflow: hidden; }
+        .preview-thumb-sm img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ── Colour ── */
+        .colour-row { display: flex; align-items: center; gap: 10px; }
+        .colour-swatch { width: 40px; height: 40px; border-radius: var(--radius-sm); border: 2px solid var(--border); cursor: pointer; overflow: hidden; flex-shrink: 0; }
+        .colour-swatch input[type="color"] { width: 56px; height: 56px; border: none; cursor: pointer; margin: -8px; }
+        .colour-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+        .colour-dot { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease; }
+        .colour-dot:hover { transform: scale(1.15); }
+        .colour-dot.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg); }
+
+        /* ── Tiers ── */
+        .tier { display: grid; grid-template-columns: 48px 1fr 72px; gap: 8px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .tier:last-child { border-bottom: none; }
+        .tier-emoji-wrap { position: relative; }
+        .tier-emoji-btn { width: 44px; height: 44px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .tier-emoji-btn:hover { border-color: var(--text-muted); }
+        .tier-desc { padding: 10px 12px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; color: var(--text); outline: none; font-family: inherit; width: 100%; }
+        .tier-desc:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .tier-amount-wrap { position: relative; }
+        .tier-currency { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .tier-amount { width: 100%; padding: 10px 10px 10px 24px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; color: var(--text); outline: none; font-family: 'JetBrains Mono', monospace; }
+        .tier-amount:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .add-tier-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px; background: none; border: 1.5px dashed var(--border); border-radius: var(--radius-sm); color: var(--text-muted); font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 8px; }
+        .add-tier-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+        /* ── Currency ── */
+        .currency-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+        .currency-chip { padding: 7px 14px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--text-dim); cursor: pointer; }
+        .currency-chip:hover { border-color: var(--text-muted); }
+        .currency-chip.selected { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+        /* ── Emoji picker ── */
+        .emoji-picker { position: absolute; top: 48px; left: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); padding: 8px; display: none; z-index: 50; width: 220px; }
+        .emoji-picker.show { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+        .emoji-pick { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; border-radius: 6px; border: none; background: none; }
+        .emoji-pick:hover { background: var(--bg-input); }
+
+        /* ── Payment tabs ── */
+        .payment-tabs {
+            display: flex; border-bottom: 1px solid var(--border);
+        }
+        .payment-tab {
+            flex: 1; padding: 14px 12px; background: none; border: none;
+            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+            color: var(--text-muted); cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s ease;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .payment-tab:hover { color: var(--text-dim); background: var(--bg-input); }
+        .payment-tab.active {
+            color: var(--accent); border-bottom-color: var(--accent);
+        }
+        .payment-tab-icon { font-size: 1rem; }
+        .payment-panel-hint {
+            font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        .input-hint {
+            font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; padding-left: 2px;
+        }
+        .raisely-status {
+            margin-top: 10px; padding: 10px 14px; border-radius: var(--radius-sm);
+            font-size: 0.82rem; font-weight: 500; display: none;
+        }
+        .raisely-status.success {
+            display: block; background: var(--green-soft); color: var(--green);
+        }
+        .raisely-status.error {
+            display: block; background: var(--red-soft); color: var(--red);
+        }
+
+        /* ── Logo section ── */
+        .logo-preview-row {
+            display: flex; align-items: center; gap: 14px;
+        }
+        .logo-preview-circle {
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; flex-shrink: 0;
+            border: 2px solid var(--border);
+            background: var(--bg-input);
+            transition: all 0.2s ease;
+        }
+        .logo-preview-circle img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .logo-letter {
+            font-size: 1.4rem; font-weight: 700; color: white;
+        }
+        .logo-preview-info { flex: 1; }
+        .logo-preview-name { font-size: 0.92rem; font-weight: 600; }
+        .logo-preview-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+        .logo-or {
+            text-align: center; font-size: 0.78rem; color: var(--text-muted);
+            margin: 10px 0; font-weight: 500;
+        }
+        .logo-upload-area {
+            border: 1.5px dashed var(--border); border-radius: var(--radius-sm);
+            padding: 16px; text-align: center; cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .logo-upload-area:hover { border-color: var(--accent); background: var(--accent-soft); }
+        .logo-upload-area.dragover { border-color: var(--accent); background: var(--accent-soft); }
+        .logo-upload-text { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; color: var(--text-dim); }
+
+        /* ══════════════════════════════
+           FULL LIVE PREVIEW
+           ══════════════════════════════ */
+        .full-preview-section { margin-bottom: 28px; }
+        .full-preview-label {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.2px; color: var(--text-muted); margin-bottom: 12px; padding-left: 2px;
+        }
+        .full-preview-label .eye-num {
+            width: 20px; height: 20px; background: var(--green); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+        .preview-device {
+            background: #1a1a1a;
+            border-radius: 24px;
+            padding: 18px 14px;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.08);
+        }
+        .preview-device-notch { width: 80px; height: 5px; background: #333; border-radius: 3px; margin: 0 auto 14px; }
+
+        /* Widget card */
+        .w-card { background: var(--bg-card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .w-video { position: relative; width: 100%; padding-bottom: 56.25%; background: #111; }
+        .w-video iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .w-video-placeholder {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: #555; gap: 8px; font-size: 13px;
+        }
+        .w-video-placeholder .play-circle {
+            width: 50px; height: 50px; border: 2px solid #444; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .w-video-placeholder .play-circle::after {
+            content: ''; border-style: solid; border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #444; margin-left: 3px;
+        }
+        .w-bottom { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .w-meta { flex: 1; min-width: 0; }
+        .w-title { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .w-channel { font-size: 0.75rem; color: var(--text-muted); }
+        .w-donate-btn {
+            display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+            color: white; border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .w-donate-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+        .w-donate-btn:active { transform: scale(0.96); }
+        .w-donate-btn .heart { font-size: 1.1rem; animation: heartBounce 3s ease-in-out infinite; }
+        @keyframes heartBounce { 0%, 85%, 100% { transform: scale(1); } 90% { transform: scale(1.25); } 95% { transform: scale(1); } }
+        .w-cause-strip { padding: 10px 16px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .w-cause-badge {
+            display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 600;
+            padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+        }
+        .w-cause-badge .dot { width: 5px; height: 5px; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        .w-cause-text { font-size: 0.75rem; color: var(--text-muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .w-cause-proof { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+        .w-cause-proof strong { color: var(--green); }
+
+        /* ── Popup ── */
+        .popup-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(44, 24, 16, 0.5);
+            z-index: 200; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px);
+        }
+        .popup-overlay.show { display: flex; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .popup {
+            background: var(--bg-card); border-radius: 20px; width: 100%; max-width: 400px;
+            overflow: hidden; box-shadow: var(--shadow-lg); animation: popUp 0.3s ease;
+        }
+        @keyframes popUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .popup-header { padding: 24px 20px 18px; color: white; }
+        .popup-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .popup-org { font-size: 0.8rem; font-weight: 600; opacity: 0.9; }
+        .popup-close { width: 28px; height: 28px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .popup-close:hover { background: rgba(255,255,255,0.3); }
+        .popup-headline { font-family: 'Fraunces', serif; font-size: 1.25rem; font-weight: 600; line-height: 1.3; }
+        .popup-live { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; opacity: 0.85; }
+        .popup-live .dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        .popup-impacts { padding: 20px; }
+        .popup-impacts-label { font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin-bottom: 12px; }
+        .popup-impact-card {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 8px; cursor: pointer; transition: all 0.15s ease;
+        }
+        .popup-impact-card:last-child { margin-bottom: 0; }
+        .popup-impact-card:hover { border-color: var(--border-focus); background: var(--accent-soft); }
+        .popup-impact-card.selected { border-color: var(--border-focus); background: var(--accent-soft); transform: scale(1.02); }
+        .popup-impact-emoji { font-size: 1.6rem; }
+        .popup-impact-desc { flex: 1; font-size: 0.88rem; font-weight: 500; }
+        .popup-impact-amount { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 600; }
+
+        /* Custom amount card */
+        .popup-custom-card {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            background: var(--bg-input); border: 1.5px dashed var(--border); border-radius: var(--radius);
+            margin-top: 10px; cursor: pointer; transition: all 0.15s ease;
+        }
+        .popup-custom-card:hover { border-color: var(--border-focus); background: var(--accent-soft); }
+        .popup-custom-card .plus-circle {
+            width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; font-weight: 600; flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .popup-custom-card .custom-label { flex: 1; font-size: 0.88rem; font-weight: 500; color: var(--text-dim); }
+
+        /* Custom amount input (replaces the card when tapped) */
+        .popup-custom-input-row {
+            display: none; align-items: center; gap: 10px;
+            padding: 10px 16px; background: var(--bg-input);
+            border: 1.5px solid var(--border); border-radius: var(--radius);
+            margin-top: 10px; animation: slideUp 0.2s ease;
+        }
+        .popup-custom-input-row.show { display: flex; }
+        .popup-custom-input-row .currency-label {
+            font-size: 1.1rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0;
+        }
+        .popup-custom-input-row input {
+            flex: 1; padding: 10px 0; border: none; background: transparent;
+            font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700;
+            color: var(--text); outline: none; min-width: 0;
+        }
+        .popup-custom-input-row input::placeholder { color: var(--text-muted); font-weight: 400; font-size: 1rem; }
+        .popup-custom-go {
+            padding: 8px 18px; border: none; border-radius: 50px;
+            color: white; font-family: inherit; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+        }
+        .popup-custom-go:hover { filter: brightness(1.1); }
+        .popup-custom-go:disabled { opacity: 0.4; cursor: default; }
+
+        /* Payment step */
+        .popup-payment { display: none; padding: 20px; }
+        .popup-payment.show { display: block; animation: slideUp 0.25s ease; }
+        .popup-payment-summary {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px; background: var(--bg-input); border-radius: var(--radius);
+            margin-bottom: 14px;
+        }
+        .popup-payment-summary .emoji { font-size: 1.4rem; }
+        .popup-payment-summary .desc { flex: 1; font-size: 0.85rem; font-weight: 500; }
+        .popup-payment-summary .amt { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .popup-pay-btn {
+            width: 100%; padding: 13px; border: none; border-radius: var(--radius-sm);
+            font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+            margin-bottom: 8px; transition: all 0.15s;
+        }
+        .popup-pay-btn:hover { filter: brightness(1.05); }
+        .popup-pay-apple { background: #000; color: #fff; }
+        .popup-pay-google { background: #fff; color: #333; border: 1.5px solid var(--border); }
+        .popup-pay-card { background: var(--bg-input); color: var(--text); border: 1.5px solid var(--border); }
+        .popup-back {
+            text-align: center; margin-top: 8px;
+        }
+        .popup-back button {
+            background: none; border: none; color: var(--text-muted); font-size: 0.82rem;
+            cursor: pointer; font-family: inherit;
+        }
+        .popup-back button:hover { color: var(--text); }
+
+        /* Thank you step */
+        .popup-thankyou { display: none; padding: 30px 20px; text-align: center; }
+        .popup-thankyou.show { display: block; animation: slideUp 0.25s ease; }
+        .popup-thankyou-heart { font-size: 3rem; margin-bottom: 10px; }
+        .popup-thankyou-title { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 6px; }
+        .popup-thankyou-text { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
+        .popup-thankyou-btn {
+            padding: 10px 24px; border-radius: var(--radius-sm); font-family: inherit;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; margin: 0 4px;
+            border: 1.5px solid var(--border); background: var(--bg-input); color: var(--text);
+        }
+        .popup-thankyou-btn:hover { background: var(--bg-hover); }
+
+        .popup-footer { padding: 12px 20px 16px; text-align: center; }
+        .popup-proof { font-size: 0.78rem; color: var(--text-muted); }
+        .popup-proof strong { font-weight: 700; }
+        .popup-powered { font-size: 0.68rem; color: var(--text-muted); margin-top: 8px; }
+        .popup-powered a { color: inherit; text-decoration: none; font-weight: 600; }
+
+        /* ── Generate / Output ── */
+        .generate-section { margin-top: 32px; }
+        .generate-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--accent), #E25822);
+            border: none; border-radius: var(--radius); color: white;
+            font-family: inherit; font-size: 16px; font-weight: 600;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(199, 91, 42, 0.3);
+            transition: all 0.2s;
+        }
+        .generate-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(199, 91, 42, 0.4); }
+        .generate-btn:active { transform: translateY(0); }
+        .generate-hint { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+        .output-area { margin-top: 20px; display: none; }
+        .output-area.show { display: block; animation: slideUp 0.3s ease; }
+        .output-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+        .output-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .output-title { font-size: 13px; font-weight: 600; color: var(--green); }
+        .copy-btn { padding: 6px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; }
+        .copy-btn:hover { background: var(--bg-hover); }
+        .output-content { padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.7; color: var(--text-dim); max-height: 450px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+        @media (max-width: 400px) {
+            .tier { grid-template-columns: 42px 1fr 64px; gap: 6px; }
+            .input-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-badge"><span class="dot"></span> iTabs Widget</div>
+        <h1>Watch & Give</h1>
+        <p>Set up a donation widget for any YouTube video. Preview it live, then grab the code.</p>
+    </div>
+
+    <!-- 1. VIDEO -->
+    <div class="section">
+        <div class="section-label"><span class="num">1</span> Video</div>
+        <div class="card"><div class="card-body">
+            <div class="input-group">
+                <div class="input-label">YouTube URL</div>
+                <div class="url-wrapper">
+                    <input type="text" class="input-field mono" id="videoUrl" placeholder="https://youtube.com/watch?v=..." autocomplete="off" spellcheck="false">
+                    <div class="url-check" id="urlCheck"></div>
+                </div>
+            </div>
+            <div class="video-preview-sm" id="videoPreviewSm">
+                <div class="preview-thumb-sm"><img id="previewImgSm" src="" alt=""></div>
+            </div>
+            <div class="input-row" style="margin-top: 14px;">
+                <div class="input-group">
+                    <div class="input-label">Video Title</div>
+                    <input type="text" class="input-field" id="videoTitle" placeholder="e.g. A Day in Rural Tanzania" value="Empowering Rural Communities in Tanzania">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Channel Name</div>
+                    <input type="text" class="input-field" id="channelName" placeholder="e.g. Tiamoyo Project" value="Tiamoyo Project">
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- 2. CAUSE -->
+    <div class="section">
+        <div class="section-label"><span class="num">2</span> Cause</div>
+        <div class="card"><div class="card-body">
+            <div class="input-group">
+                <div class="input-label">Organisation Name</div>
+                <input type="text" class="input-field" id="orgName" placeholder="e.g. Tiamoyo Empower Project" value="Tiamoyo Empower Project">
+            </div>
+            <div class="input-group">
+                <div class="input-label">Headline <span class="optional">What are people giving to?</span></div>
+                <input type="text" class="input-field" id="headline" placeholder="e.g. Empowering rural families in Tanzania" value="Empowering rural families in Tanzania">
+            </div>
+            <div class="input-group">
+                <div class="input-label">Button Label <span class="optional">optional</span></div>
+                <div class="input-row">
+                    <input type="text" class="input-field" id="btnLabel" placeholder="Donate" value="Donate">
+                    <input type="text" class="input-field" id="btnIcon" placeholder="❤️ emoji" value="❤️" style="text-align: center;">
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- 3. LOGO -->
+    <div class="section">
+        <div class="section-label"><span class="num">3</span> Logo</div>
+        <div class="card"><div class="card-body">
+            <div class="logo-preview-row">
+                <div class="logo-preview-circle" id="logoPreview">
+                    <img id="logoImg" src="" alt="" style="display:none">
+                    <span class="logo-letter" id="logoLetter">T</span>
+                </div>
+                <div class="logo-preview-info">
+                    <div class="logo-preview-name" id="logoPreviewName">Tiamoyo Empower Project</div>
+                    <div class="logo-preview-hint">Auto-generated from org name</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top:14px">
+                <div class="input-label">Logo URL <span class="optional">paste from imgbb, website, etc.</span></div>
+                <input type="text" class="input-field mono" id="logoUrl" placeholder="https://i.ibb.co/your-logo.png" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="logo-or">or</div>
+            <div class="logo-upload-area" id="logoUploadArea">
+                <input type="file" id="logoFile" accept="image/*" style="display:none">
+                <div class="logo-upload-text">
+                    <span style="font-size:1.2rem">📷</span>
+                    <span>Drop an image or <strong style="color:var(--accent);cursor:pointer" onclick="document.getElementById('logoFile').click()">browse</strong></span>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- 4. BRAND COLOUR -->
+    <div class="section">
+        <div class="section-label"><span class="num">4</span> Brand Colour</div>
+        <div class="card"><div class="card-body">
+            <div class="colour-row">
+                <div class="colour-swatch" id="colourSwatch"><input type="color" id="colourPicker" value="#C75B2A"></div>
+                <div class="colour-presets">
+                    <div class="colour-dot active" style="background:#C75B2A" data-colour="#C75B2A"></div>
+                    <div class="colour-dot" style="background:#2D6A4F" data-colour="#2D6A4F"></div>
+                    <div class="colour-dot" style="background:#1D4ED8" data-colour="#1D4ED8"></div>
+                    <div class="colour-dot" style="background:#7C3AED" data-colour="#7C3AED"></div>
+                    <div class="colour-dot" style="background:#DC2626" data-colour="#DC2626"></div>
+                    <div class="colour-dot" style="background:#B45309" data-colour="#B45309"></div>
+                    <div class="colour-dot" style="background:#0F766E" data-colour="#0F766E"></div>
+                    <div class="colour-dot" style="background:#BE185D" data-colour="#BE185D"></div>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- 4. IMPACT TIERS -->
+    <div class="section">
+        <div class="section-label"><span class="num">5</span> Impact Tiers</div>
+        <div class="card"><div class="card-body">
+            <div class="input-group" style="margin-bottom:12px">
+                <div class="input-label">Currency</div>
+                <div class="currency-chips">
+                    <div class="currency-chip selected" data-symbol="$" data-code="AUD">$ AUD</div>
+                    <div class="currency-chip" data-symbol="$" data-code="USD">$ USD</div>
+                    <div class="currency-chip" data-symbol="£" data-code="GBP">£ GBP</div>
+                    <div class="currency-chip" data-symbol="€" data-code="EUR">€ EUR</div>
+                </div>
+            </div>
+            <div id="tiersContainer"></div>
+            <button class="add-tier-btn" id="addTierBtn">+ Add another tier</button>
+        </div></div>
+    </div>
+
+    <!-- 6. PAYMENT -->
+    <div class="section">
+        <div class="section-label"><span class="num">6</span> Payment</div>
+        <div class="card">
+            <div class="payment-tabs">
+                <button class="payment-tab active" data-tab="stripe" onclick="switchPaymentTab('stripe')">
+                    <span class="payment-tab-icon">💳</span> Stripe Links
+                </button>
+                <button class="payment-tab" data-tab="raisely" onclick="switchPaymentTab('raisely')">
+                    <span class="payment-tab-icon">🟢</span> Raisely
+                </button>
+            </div>
+            <div class="card-body">
+                <!-- Stripe tab -->
+                <div class="payment-panel" id="panelStripe">
+                    <div class="payment-panel-hint">Create payment links in your <a href="https://dashboard.stripe.com/payment-links" target="_blank" style="color:var(--accent);font-weight:600">Stripe Dashboard</a> — one for each tier. Add later if you don't have them yet.</div>
+                    <div id="stripeLinksContainer"></div>
+                </div>
+                <!-- Raisely tab -->
+                <div class="payment-panel" id="panelRaisely" style="display:none">
+                    <div class="payment-panel-hint">Connect your existing <a href="https://www.raisely.com" target="_blank" style="color:var(--accent);font-weight:600">Raisely</a> campaign. Donations will appear in your Raisely dashboard with receipts and tax deductibility handled automatically.</div>
+                    <div class="input-group">
+                        <div class="input-label">Campaign UUID</div>
+                        <input type="text" class="input-field mono" id="raiselyUuid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+                        <div class="input-hint">Find this in Raisely → Settings → API & Webhooks</div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-label">API Key</div>
+                        <input type="text" class="input-field mono" id="raiselyApiKey" placeholder="Your Raisely API key" autocomplete="off" spellcheck="false">
+                        <div class="input-hint">Same location — Settings → API & Webhooks</div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-label">Profile Path <span class="optional">your campaign URL slug</span></div>
+                        <input type="text" class="input-field mono" id="raiselyProfile" placeholder="e.g. tiamoyo-water-project" autocomplete="off" spellcheck="false">
+                        <div class="input-hint">The part after raisely.com/ in your campaign URL</div>
+                    </div>
+                    <div class="raisely-status" id="raiselyStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ FULL LIVE PREVIEW ═══ -->
+    <div class="full-preview-section">
+        <div class="full-preview-label">
+            <span class="eye-num">👁</span> Live Preview — tap Donate to test the popup
+        </div>
+        <div class="preview-device">
+            <div class="preview-device-notch"></div>
+            <div class="w-card">
+                <div class="w-video" id="wVideo">
+                    <div class="w-video-placeholder" id="wVideoPlaceholder">
+                        <div class="play-circle"></div>
+                        <span>Paste a YouTube URL above</span>
+                    </div>
+                </div>
+                <div class="w-bottom">
+                    <div class="w-meta">
+                        <div class="w-title" id="wTitle">Video Title</div>
+                        <div class="w-channel" id="wChannel">Channel Name</div>
+                    </div>
+                    <button class="w-donate-btn" id="wDonateBtn" onclick="openPopup()">
+                        <span class="heart" id="wBtnIcon">❤️</span>
+                        <span id="wBtnLabel">Donate</span>
+                    </button>
+                </div>
+                <div class="w-cause-strip">
+                    <img class="w-cause-logo" id="wCauseLogo" src="" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover;display:none;flex-shrink:0">
+                    <div class="w-cause-badge" id="wBadge">
+                        <span class="dot" id="wBadgeDot"></span>
+                        <span id="wBadgeText">Org Name</span>
+                    </div>
+                    <span class="w-cause-text" id="wHeadline">Headline text</span>
+                    <span class="w-cause-proof">❤️ <strong id="wProofCount">7</strong> donated</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GENERATE -->
+    <div class="generate-section">
+        <button class="generate-btn" id="generateBtn">🚀 Generate & Download Widget</button>
+        <p class="generate-hint">Downloads a complete HTML file ready to deploy on any site</p>
+    </div>
+    <div class="output-area" id="outputArea">
+        <div class="output-box">
+            <div class="output-header">
+                <span class="output-title">✓ Widget Generated</span>
+                <button class="copy-btn" id="downloadAgainBtn">⬇ Download Again</button>
+            </div>
+            <div id="outputInstructions" style="padding:16px;font-size:0.88rem;color:var(--text-dim);line-height:1.6">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ POPUP OVERLAY ═══ -->
+<div class="popup-overlay" id="popupOverlay" onclick="if(event.target===this)closePopup()">
+    <div class="popup" onclick="event.stopPropagation()">
+        <div class="popup-header" id="popupHeader">
+            <div class="popup-header-top">
+                <span class="popup-org" id="popupOrg">Organisation</span>
+                <button class="popup-close" onclick="closePopup()">✕</button>
+            </div>
+            <div class="popup-headline" id="popupHeadline">Make an impact</div>
+            <div class="popup-live"><span class="dot"></span> LIVE</div>
+        </div>
+
+        <!-- Step 1: Choose impact -->
+        <div class="popup-impacts" id="popupStep1">
+            <div class="popup-impacts-label">Choose your impact</div>
+            <div id="popupImpacts"></div>
+        </div>
+
+        <!-- Step 2: Payment -->
+        <div class="popup-payment" id="popupStep2">
+            <div class="popup-payment-summary" id="popupPaySummary"></div>
+            <div id="popupPayButtons"></div>
+            <div class="popup-back"><button onclick="popupGoBack()">← Change selection</button></div>
+        </div>
+
+        <!-- Step 3: Thank you -->
+        <div class="popup-thankyou" id="popupStep3">
+            <div class="popup-thankyou-heart">💚</div>
+            <div class="popup-thankyou-title">You're amazing</div>
+            <div class="popup-thankyou-text" id="popupThankText"></div>
+            <button class="popup-thankyou-btn" onclick="popupReset()">Donate again</button>
+            <button class="popup-thankyou-btn" onclick="closePopup()">Close</button>
+        </div>
+
+        <div class="popup-footer">
+            <div class="popup-proof">❤️ <strong id="popupProof">7</strong> people donated while watching</div>
+            <div class="popup-powered">Powered by <a href="#">iTabs</a></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ── State ──
+    const state = {
+        videoUrl: '', videoId: '', videoTitle: 'Empowering Rural Communities in Tanzania', channelName: 'Tiamoyo Project',
+        orgName: 'Tiamoyo Empower Project', headline: 'Empowering rural families in Tanzania', btnLabel: 'Donate', btnIcon: '❤️',
+        logoUrl: '',
+        colour: '#C75B2A',
+        paymentMethod: 'stripe',
+        raisely: { uuid: '', apiKey: '', profile: '' },
+        currency: { symbol: '$', code: 'AUD' },
+        tiers: [
+            { emoji: '🌾', desc: 'Buy seeds for a family farm', amount: 3, stripeLink: '' },
+            { emoji: '💧', desc: 'Provide clean water for a week', amount: 5, stripeLink: '' },
+            { emoji: '📚', desc: 'Fund a training workshop', amount: 10, stripeLink: '' }
+        ]
+    };
+    let proofCount = 7;
+    let selectedTier = null;
+
+    const EMOJIS = ['🌾','💧','📚','🍚','🏠','💊','🌱','🐄','👶','🎒','⚡','🛠️','🌍','❤️','🙏','🎓','🍳','👨‍🌾','🧱','💡'];
+
+    function extractVideoId(url) {
+        for (const p of [/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/, /youtu\.be\/([a-zA-Z0-9_-]{11})/, /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/, /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/]) {
+            const m = url.match(p);
+            if (m) return m[1];
+        }
+        return null;
+    }
+    function darken(hex, pct) {
+        const n = parseInt(hex.replace('#',''), 16);
+        const r = Math.max(0, (n >> 16) - Math.round(2.55 * pct));
+        const g = Math.max(0, ((n >> 8) & 0xFF) - Math.round(2.55 * pct));
+        const b = Math.max(0, (n & 0xFF) - Math.round(2.55 * pct));
+        return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+    }
+
+    // ── URL ──
+    let urlTimer;
+    document.getElementById('videoUrl').addEventListener('input', (e) => {
+        clearTimeout(urlTimer);
+        urlTimer = setTimeout(() => {
+            const url = e.target.value.trim();
+            state.videoUrl = url;
+            const id = extractVideoId(url);
+            const uc = document.getElementById('urlCheck');
+            if (id) {
+                state.videoId = id;
+                uc.className = 'url-check valid'; uc.textContent = '✓';
+                document.getElementById('previewImgSm').src = `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+                document.getElementById('videoPreviewSm').classList.add('show');
+            } else if (url.length > 5) {
+                state.videoId = ''; uc.className = 'url-check invalid'; uc.textContent = '✗';
+                document.getElementById('videoPreviewSm').classList.remove('show');
+            } else {
+                state.videoId = ''; uc.className = 'url-check';
+                document.getElementById('videoPreviewSm').classList.remove('show');
+            }
+            updateFullPreview();
+        }, 300);
+    });
+
+    // ── Bind inputs ──
+    ['videoTitle','channelName','orgName','headline','btnLabel','btnIcon'].forEach(key => {
+        document.getElementById(key).addEventListener('input', (e) => {
+            state[key] = e.target.value;
+            if (key === 'orgName') updateLogoPreview();
+            updateFullPreview();
+        });
+    });
+
+    // ── Colour ──
+    function setColour(c) {
+        state.colour = c;
+        document.getElementById('colourPicker').value = c;
+        document.getElementById('colourSwatch').style.borderColor = c;
+        document.querySelectorAll('.colour-dot').forEach(d => d.classList.toggle('active', d.dataset.colour === c));
+        updateLogoPreview();
+        updateFullPreview();
+    }
+    document.getElementById('colourPicker').addEventListener('input', (e) => setColour(e.target.value));
+    document.querySelectorAll('.colour-dot').forEach(d => d.addEventListener('click', () => setColour(d.dataset.colour)));
+
+    // ── Logo ──
+    function getAutoAvatarUrl() {
+        const name = encodeURIComponent(state.orgName || 'Org');
+        const bg = state.colour.replace('#', '');
+        return `https://ui-avatars.com/api/?name=${name}&background=${bg}&color=fff&rounded=true&size=128&bold=true`;
+    }
+
+    function updateLogoPreview() {
+        const circle = document.getElementById('logoPreview');
+        const img = document.getElementById('logoImg');
+        const letter = document.getElementById('logoLetter');
+        const nameEl = document.getElementById('logoPreviewName');
+        const hintEl = document.querySelector('.logo-preview-hint');
+
+        nameEl.textContent = state.orgName || 'Org Name';
+
+        if (state.logoUrl) {
+            img.src = state.logoUrl;
+            img.style.display = 'block';
+            letter.style.display = 'none';
+            circle.style.background = 'var(--bg-input)';
+            circle.style.borderColor = state.colour;
+            hintEl.textContent = 'Custom logo';
+        } else {
+            img.src = getAutoAvatarUrl();
+            img.style.display = 'block';
+            letter.style.display = 'none';
+            circle.style.background = state.colour;
+            circle.style.borderColor = state.colour;
+            hintEl.textContent = 'Auto-generated from org name';
+        }
+    }
+
+    // Logo URL input
+    document.getElementById('logoUrl').addEventListener('input', (e) => {
+        state.logoUrl = e.target.value.trim();
+        updateLogoPreview();
+        updateFullPreview();
+    });
+
+    // Logo file upload
+    document.getElementById('logoFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                state.logoUrl = ev.target.result; // base64
+                document.getElementById('logoUrl').value = '(uploaded image)';
+                updateLogoPreview();
+                updateFullPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Drag & drop
+    const uploadArea = document.getElementById('logoUploadArea');
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                state.logoUrl = ev.target.result;
+                document.getElementById('logoUrl').value = '(uploaded image)';
+                updateLogoPreview();
+                updateFullPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    uploadArea.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'STRONG') document.getElementById('logoFile').click();
+    });
+
+    // ── Payment tabs ──
+    function switchPaymentTab(tab) {
+        state.paymentMethod = tab;
+        document.querySelectorAll('.payment-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+        document.getElementById('panelStripe').style.display = tab === 'stripe' ? 'block' : 'none';
+        document.getElementById('panelRaisely').style.display = tab === 'raisely' ? 'block' : 'none';
+    }
+
+    // Raisely inputs
+    document.getElementById('raiselyUuid').addEventListener('input', (e) => { state.raisely.uuid = e.target.value.trim(); });
+    document.getElementById('raiselyApiKey').addEventListener('input', (e) => { state.raisely.apiKey = e.target.value.trim(); });
+    document.getElementById('raiselyProfile').addEventListener('input', (e) => { state.raisely.profile = e.target.value.trim(); });
+
+    // ── Currency ──
+    document.querySelectorAll('.currency-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.currency-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            state.currency = { symbol: chip.dataset.symbol, code: chip.dataset.code };
+            renderTiers(); updateFullPreview();
+        });
+    });
+
+    // ── Tiers ──
+    function renderTiers() {
+        document.getElementById('tiersContainer').innerHTML = state.tiers.map((t, i) => `
+            <div class="tier">
+                <div class="tier-emoji-wrap">
+                    <button class="tier-emoji-btn" onclick="toggleEmojiPicker(${i})">${t.emoji}</button>
+                    <div class="emoji-picker" id="emojiPicker-${i}">
+                        ${EMOJIS.map(e => `<button class="emoji-pick" onclick="pickEmoji(${i},'${e}')">${e}</button>`).join('')}
+                    </div>
+                </div>
+                <input class="tier-desc" value="${t.desc}" placeholder="What does this amount do?" oninput="state.tiers[${i}].desc=this.value;updateFullPreview()">
+                <div class="tier-amount-wrap">
+                    <span class="tier-currency">${state.currency.symbol}</span>
+                    <input class="tier-amount" type="number" value="${t.amount}" min="1" oninput="state.tiers[${i}].amount=parseInt(this.value)||0;updateFullPreview()">
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('stripeLinksContainer').innerHTML = state.tiers.map((t, i) => `
+            <div class="input-group">
+                <div class="input-label">${t.emoji} ${t.desc||'Tier '+(i+1)} — ${state.currency.symbol}${t.amount}</div>
+                <input type="text" class="input-field mono" placeholder="https://buy.stripe.com/..." value="${t.stripeLink}" oninput="state.tiers[${i}].stripeLink=this.value">
+            </div>
+        `).join('');
+    }
+    function toggleEmojiPicker(i) {
+        document.querySelectorAll('.emoji-picker').forEach(p => { if (p.id !== `emojiPicker-${i}`) p.classList.remove('show'); });
+        document.getElementById(`emojiPicker-${i}`).classList.toggle('show');
+    }
+    function pickEmoji(i, e) { state.tiers[i].emoji = e; document.getElementById(`emojiPicker-${i}`).classList.remove('show'); renderTiers(); updateFullPreview(); }
+    document.getElementById('addTierBtn').addEventListener('click', () => { if (state.tiers.length < 5) { state.tiers.push({emoji:'🌍',desc:'',amount:0,stripeLink:''}); renderTiers(); updateFullPreview(); } });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.tier-emoji-wrap')) document.querySelectorAll('.emoji-picker').forEach(p => p.classList.remove('show')); });
+
+    // ══════════════════════════════
+    // FULL PREVIEW UPDATE
+    // ══════════════════════════════
+    function updateFullPreview() {
+        const c = state.colour, cd = darken(c, 20);
+        // Video
+        const wVideo = document.getElementById('wVideo');
+        const ph = document.getElementById('wVideoPlaceholder');
+        if (state.videoId) {
+            let ifr = wVideo.querySelector('iframe');
+            if (!ifr) { ifr = document.createElement('iframe'); ifr.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; ifr.allowFullscreen = true; wVideo.appendChild(ifr); }
+            const src = `https://www.youtube.com/embed/${state.videoId}?rel=0&modestbranding=1`;
+            if (ifr.src !== src) ifr.src = src;
+            ph.style.display = 'none';
+        } else { const ifr = wVideo.querySelector('iframe'); if (ifr) ifr.remove(); ph.style.display = ''; }
+        // Text
+        document.getElementById('wTitle').textContent = state.videoTitle || 'Video Title';
+        document.getElementById('wChannel').textContent = state.channelName || 'Channel Name';
+        // Button
+        const btn = document.getElementById('wDonateBtn');
+        btn.style.background = `linear-gradient(135deg, ${c}, ${cd})`;
+        btn.style.boxShadow = `0 3px 14px ${c}55`;
+        document.getElementById('wBtnIcon').textContent = state.btnIcon || '❤️';
+        document.getElementById('wBtnLabel').textContent = state.btnLabel || 'Donate';
+        // Badge
+        const badge = document.getElementById('wBadge');
+        badge.style.color = c; badge.style.background = c + '15';
+        document.getElementById('wBadgeDot').style.background = c;
+        document.getElementById('wBadgeText').textContent = state.orgName || 'Org Name';
+        document.getElementById('wHeadline').textContent = state.headline || 'Headline text';
+        // Logo in preview
+        const wLogo = document.getElementById('wCauseLogo');
+        const logoSrc = state.logoUrl || getAutoAvatarUrl();
+        wLogo.src = logoSrc;
+        wLogo.style.display = 'block';
+    }
+
+    // ══════════════════════════════
+    // POPUP — Full 3-step flow
+    // ══════════════════════════════
+    function openPopup() {
+        const c = state.colour, cd = darken(c, 20);
+        document.getElementById('popupHeader').style.background = `linear-gradient(135deg, ${c}, ${cd})`;
+        document.getElementById('popupOrg').textContent = state.orgName || 'Organisation';
+        document.getElementById('popupHeadline').textContent = state.headline || 'Make an impact';
+        const valid = state.tiers.filter(t => t.desc && t.amount > 0);
+        document.getElementById('popupImpacts').innerHTML = (valid.length ? valid.map((t, i) => `
+            <div class="popup-impact-card" onclick="selectImpact(${i})" data-idx="${i}">
+                <div class="popup-impact-emoji">${t.emoji}</div>
+                <div class="popup-impact-desc">${t.desc}</div>
+                <div class="popup-impact-amount" style="color:${c}">${state.currency.symbol}${t.amount}</div>
+            </div>
+        `).join('') : '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:14px">Fill in impact tiers above</div>') +
+        `<div class="popup-custom-card" id="customCard" onclick="showCustomInput()">
+            <div class="plus-circle" style="background:${c}15;color:${c}">+</div>
+            <div class="custom-label">Give a custom amount</div>
+        </div>
+        <div class="popup-custom-input-row" id="customInputRow">
+            <span class="currency-label">${state.currency.symbol}</span>
+            <input type="number" id="customAmountInput" placeholder="Enter amount" min="1" oninput="validateCustom()">
+            <button class="popup-custom-go" id="customGoBtn" style="background:${c}" disabled onclick="submitCustom()">Go →</button>
+        </div>`;
+        document.getElementById('popupProof').textContent = proofCount;
+        document.getElementById('popupProof').style.color = c;
+        popupShowStep(1);
+        document.getElementById('popupOverlay').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closePopup() {
+        document.getElementById('popupOverlay').classList.remove('show');
+        document.body.style.overflow = '';
+        setTimeout(popupReset, 300);
+    }
+    function selectImpact(i) {
+        const valid = state.tiers.filter(t => t.desc && t.amount > 0);
+        selectedTier = valid[i];
+        document.querySelectorAll('.popup-impact-card').forEach(c => c.classList.remove('selected'));
+        document.querySelector(`.popup-impact-card[data-idx="${i}"]`).classList.add('selected');
+        setTimeout(() => {
+            const s = state.currency.symbol;
+            document.getElementById('popupPaySummary').innerHTML = `
+                <span class="emoji">${selectedTier.emoji}</span>
+                <span class="desc">${selectedTier.desc}</span>
+                <span class="amt" style="color:${state.colour}">${s}${selectedTier.amount}</span>
+            `;
+            document.getElementById('popupPayButtons').innerHTML = `
+                <button class="popup-pay-btn popup-pay-apple" onclick="handlePay()"> Apple Pay — ${s}${selectedTier.amount}</button>
+                <button class="popup-pay-btn popup-pay-google" onclick="handlePay()">G Pay — ${s}${selectedTier.amount}</button>
+                <button class="popup-pay-btn popup-pay-card" onclick="handlePay()">💳 Card — ${s}${selectedTier.amount}</button>
+            `;
+            popupShowStep(2);
+        }, 200);
+    }
+    function handlePay() {
+        popupShowStep(3);
+        document.getElementById('popupThankText').textContent = `Your ${state.currency.symbol}${selectedTier.amount} will ${selectedTier.desc.toLowerCase()}. Thank you for making a difference.`;
+        proofCount++;
+        document.getElementById('popupProof').textContent = proofCount;
+        document.getElementById('wProofCount').textContent = proofCount;
+    }
+    function popupGoBack() { popupShowStep(1); }
+    function popupReset() { selectedTier = null; document.querySelectorAll('.popup-impact-card').forEach(c => c.classList.remove('selected')); popupShowStep(1); }
+
+    // ── Custom amount ──
+    function showCustomInput() {
+        document.getElementById('customCard').style.display = 'none';
+        document.getElementById('customInputRow').classList.add('show');
+        document.querySelectorAll('.popup-impact-card').forEach(c => c.classList.remove('selected'));
+        setTimeout(() => document.getElementById('customAmountInput').focus(), 100);
+    }
+    function validateCustom() {
+        const val = parseInt(document.getElementById('customAmountInput').value);
+        document.getElementById('customGoBtn').disabled = !(val > 0);
+    }
+    function submitCustom() {
+        const val = parseInt(document.getElementById('customAmountInput').value);
+        if (val > 0) {
+            selectedTier = { emoji: '💛', desc: 'Custom donation', amount: val };
+            const s = state.currency.symbol;
+            document.getElementById('popupPaySummary').innerHTML = `
+                <span class="emoji">💛</span>
+                <span class="desc">Custom donation</span>
+                <span class="amt" style="color:${state.colour}">${s}${val}</span>
+            `;
+            document.getElementById('popupPayButtons').innerHTML = `
+                <button class="popup-pay-btn popup-pay-apple" onclick="handlePay()"> Apple Pay — ${s}${val}</button>
+                <button class="popup-pay-btn popup-pay-google" onclick="handlePay()">G Pay — ${s}${val}</button>
+                <button class="popup-pay-btn popup-pay-card" onclick="handlePay()">💳 Card — ${s}${val}</button>
+            `;
+            popupShowStep(2);
+        }
+    }
+    function popupShowStep(n) {
+        document.getElementById('popupStep1').style.display = n === 1 ? 'block' : 'none';
+        document.getElementById('popupStep2').className = 'popup-payment' + (n === 2 ? ' show' : '');
+        document.getElementById('popupStep3').className = 'popup-thankyou' + (n === 3 ? ' show' : '');
+    }
+
+    // ── Generate complete widget HTML & download ──
+    let lastBlob = null;
+    function generateWidget() {
+        const c = state.colour, cd = darken(c, 20), s = state.currency.symbol;
+        const validTiers = state.tiers.filter(t => t.desc && t.amount > 0);
+        const causeConfig = {
+            youtubeId: state.videoId,
+            videoTitle: state.videoTitle || 'Video Title',
+            channelName: state.channelName || 'Channel',
+            orgName: state.orgName || 'Organisation',
+            headline: state.headline || 'Make an impact',
+            buttonLabel: state.btnLabel || 'Donate',
+            buttonIcon: state.btnIcon || '❤️',
+            buttonColor: c,
+            logoUrl: state.logoUrl || getAutoAvatarUrl(),
+            headerGradient: [c, cd],
+            paymentMethod: state.paymentMethod,
+            raisely: state.paymentMethod === 'raisely' ? {
+                uuid: state.raisely.uuid,
+                apiKey: state.raisely.apiKey,
+                profile: state.raisely.profile
+            } : null,
+            impacts: validTiers.map(t => ({
+                emoji: t.emoji,
+                description: t.desc,
+                amount: t.amount,
+                stripeLink: t.stripeLink || 'https://buy.stripe.com/REPLACE_ME'
+            })),
+            currencySymbol: s,
+            socialProofStart: Math.floor(Math.random() * 8) + 3
+        };
+
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch & Give | ${causeConfig.orgName}</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cause-primary: ${c};
+            --cause-primary-soft: ${c}18;
+            --cause-secondary: ${cd};
+            --bg: #FDFAF6;
+            --bg-card: #FFFFFF;
+            --bg-hover: #F5F0EA;
+            --bg-input: #F7F3EE;
+            --text: #2C1810;
+            --text-secondary: #6B5744;
+            --text-light: #9C8B7A;
+            --border: #E8DDD0;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --shadow-lg: 0 12px 40px rgba(44, 24, 16, 0.18);
+            --radius: 14px;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .page-wrapper { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        .video-card {
+            background: var(--bg-card); border-radius: var(--radius); overflow: hidden;
+            box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 28px;
+        }
+        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #1a1a1a; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .video-bottom { padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .video-meta { flex: 1; min-width: 0; }
+        .video-title { font-weight: 600; font-size: 0.92rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .video-channel { font-size: 0.78rem; color: var(--text-light); }
+
+        .donate-btn {
+            display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+            background: linear-gradient(135deg, ${c}, ${cd}); color: white; border: none;
+            border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+            font-weight: 600; cursor: pointer; box-shadow: 0 3px 14px ${c}55;
+            transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+        }
+        .donate-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 20px ${c}66; }
+        .donate-btn:active { transform: scale(0.96); }
+        .donate-btn .heart { font-size: 1.1rem; animation: heartBounce 3s ease-in-out infinite; }
+        @keyframes heartBounce { 0%, 85%, 100% { transform: scale(1); } 90% { transform: scale(1.25); } 95% { transform: scale(1); } }
+
+        .cause-strip { padding: 10px 18px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .cause-strip-badge {
+            display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 600;
+            color: ${c}; background: ${c}12; padding: 3px 10px; border-radius: 20px;
+        }
+        .cause-strip-badge .dot { width: 5px; height: 5px; background: ${c}; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } }
+        .cause-strip-text { font-size: 0.75rem; color: var(--text-light); flex: 1; }
+        .cause-strip-proof { font-size: 0.72rem; color: var(--text-light); }
+        .cause-strip-proof strong { color: ${c}; }
+
+        /* Popup */
+        .popup-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(44, 24, 16, 0.5);
+            z-index: 200; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px);
+        }
+        .popup-overlay.show { display: flex; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .popup {
+            background: var(--bg-card); border-radius: 20px; width: 100%; max-width: 400px;
+            overflow: hidden; box-shadow: var(--shadow-lg); animation: popUp 0.3s ease;
+        }
+        @keyframes popUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .widget-header { padding: 24px 20px 18px; background: linear-gradient(135deg, ${c}, ${cd}); color: white; }
+        .widget-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .widget-org { font-size: 0.8rem; font-weight: 600; opacity: 0.9; }
+        .widget-close { width: 28px; height: 28px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .widget-close:hover { background: rgba(255,255,255,0.3); }
+        .widget-headline { font-family: 'Fraunces', serif; font-size: 1.25rem; font-weight: 600; line-height: 1.3; }
+        .widget-live { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; opacity: 0.85; }
+        .widget-live .dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+
+        .impact-options { padding: 20px; }
+        .impact-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; }
+        .impact-card {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 8px; cursor: pointer; transition: all 0.15s ease;
+        }
+        .impact-card:hover { border-color: ${c}; background: ${c}08; }
+        .impact-card.selected { border-color: ${c}; background: ${c}10; transform: scale(1.02); }
+        .impact-emoji { font-size: 1.6rem; }
+        .impact-desc { flex: 1; font-size: 0.88rem; font-weight: 500; }
+        .impact-amount { font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700; color: ${c}; }
+
+        /* Custom amount */
+        .custom-card {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            background: var(--bg-input); border: 1.5px dashed var(--border); border-radius: var(--radius);
+            margin-top: 10px; cursor: pointer; transition: all 0.15s ease;
+        }
+        .custom-card:hover { border-color: ${c}; background: ${c}08; }
+        .custom-card .plus-circle {
+            width: 38px; height: 38px; border-radius: 50%; background: ${c}15; color: ${c};
+            display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 600;
+        }
+        .custom-card .custom-label { flex: 1; font-size: 0.88rem; font-weight: 500; color: var(--text-secondary); }
+        .custom-input-row {
+            display: none; align-items: center; gap: 10px; padding: 10px 16px;
+            background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--radius);
+            margin-top: 10px; animation: slideUp 0.2s ease;
+        }
+        .custom-input-row.show { display: flex; }
+        .custom-input-row .cur { font-size: 1.1rem; font-weight: 700; color: var(--text-light); }
+        .custom-input-row input {
+            flex: 1; padding: 10px 0; border: none; background: transparent;
+            font-family: 'DM Sans', sans-serif; font-size: 1.4rem; font-weight: 700;
+            color: var(--text); outline: none; min-width: 0;
+        }
+        .custom-input-row input::placeholder { color: var(--text-light); font-weight: 400; font-size: 1rem; }
+        .custom-go {
+            padding: 8px 18px; border: none; border-radius: 50px; background: ${c};
+            color: white; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .custom-go:disabled { opacity: 0.4; cursor: default; }
+        .custom-go:hover:not(:disabled) { filter: brightness(1.1); }
+
+        /* Payment step */
+        .payment-step { display: none; padding: 20px; }
+        .payment-step.show { display: block; animation: slideUp 0.25s ease; }
+        .payment-summary {
+            display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+            background: var(--bg-input); border-radius: var(--radius); margin-bottom: 14px;
+        }
+        .payment-summary .p-emoji { font-size: 1.4rem; }
+        .payment-summary .p-desc { flex: 1; font-size: 0.85rem; font-weight: 500; }
+        .payment-summary .p-amt { font-weight: 700; color: ${c}; }
+        .pay-btn {
+            width: 100%; padding: 13px; border: none; border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+            cursor: pointer; margin-bottom: 8px; transition: all 0.15s;
+        }
+        .pay-btn:hover { filter: brightness(1.05); }
+        .pay-apple { background: #000; color: #fff; }
+        .pay-google { background: #fff; color: #333; border: 1.5px solid var(--border); }
+        .pay-card { background: var(--bg-input); color: var(--text); border: 1.5px solid var(--border); }
+        .payment-back { text-align: center; margin-top: 8px; }
+        .payment-back button { background: none; border: none; color: var(--text-light); font-size: 0.82rem; cursor: pointer; font-family: inherit; }
+        .payment-back button:hover { color: var(--text); }
+
+        /* Thank you */
+        .thankyou-step { display: none; padding: 30px 20px; text-align: center; }
+        .thankyou-step.show { display: block; animation: slideUp 0.25s ease; }
+        .thankyou-heart { font-size: 3rem; margin-bottom: 10px; }
+        .thankyou-title { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 6px; }
+        .thankyou-text { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+        .thankyou-btn {
+            padding: 10px 24px; border-radius: var(--radius-sm); font-family: inherit;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; margin: 0 4px;
+            border: 1.5px solid var(--border); background: var(--bg-input); color: var(--text);
+        }
+        .thankyou-btn:hover { background: var(--bg-hover); }
+
+        .social-proof { padding: 12px 20px; text-align: center; font-size: 0.78rem; color: var(--text-light); }
+        .social-proof strong { color: ${c}; }
+        .powered-by { text-align: center; padding: 0 20px 16px; font-size: 0.68rem; color: var(--text-light); }
+        .powered-by a { color: ${c}; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+    <div class="video-card">
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/${causeConfig.youtubeId}?rel=0&modestbranding=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+        <div class="video-bottom">
+            <div class="video-meta">
+                <div class="video-title">${esc(causeConfig.videoTitle)}</div>
+                <div class="video-channel">${esc(causeConfig.channelName)}</div>
+            </div>
+            <button class="donate-btn" onclick="openPopup()">
+                <span class="heart">${causeConfig.buttonIcon}</span> ${esc(causeConfig.buttonLabel)}
+            </button>
+        </div>
+        <div class="cause-strip">
+            <img src="${causeConfig.logoUrl}" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0">
+            <div class="cause-strip-badge"><span class="dot"></span> ${esc(causeConfig.orgName)}</div>
+            <span class="cause-strip-text">${esc(causeConfig.headline)}</span>
+            <span class="cause-strip-proof">❤️ <strong id="cardProof">${causeConfig.socialProofStart}</strong> donated</span>
+        </div>
+    </div>
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" id="popupOverlay" onclick="if(event.target===this)closePopup()">
+    <div class="popup" onclick="event.stopPropagation()">
+        <div class="widget-header">
+            <div class="widget-header-top">
+                <span class="widget-org"><img src="${causeConfig.logoUrl}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px">${esc(causeConfig.orgName)}</span>
+                <button class="widget-close" onclick="closePopup()">✕</button>
+            </div>
+            <div class="widget-headline">${esc(causeConfig.headline)}</div>
+            <div class="widget-live"><span class="dot"></span> LIVE</div>
+        </div>
+
+        <div class="impact-options" id="step1">
+            <div class="impact-label">Choose your impact</div>
+${causeConfig.impacts.map((imp, i) => `            <div class="impact-card" data-index="${i}" onclick="selectImpact(${i})">
+                <div class="impact-emoji">${imp.emoji}</div>
+                <div class="impact-desc">${esc(imp.description)}</div>
+                <div class="impact-amount">${s}${imp.amount}</div>
+            </div>`).join('\\n')}
+            <div class="custom-card" id="customCard" onclick="showCustom()">
+                <div class="plus-circle">+</div>
+                <div class="custom-label">Give a custom amount</div>
+            </div>
+            <div class="custom-input-row" id="customRow">
+                <span class="cur">${s}</span>
+                <input type="number" id="customAmt" placeholder="Enter amount" min="1" oninput="document.getElementById('customGo').disabled=!(parseInt(this.value)>0)">
+                <button class="custom-go" id="customGo" disabled onclick="submitCustom()">Go →</button>
+            </div>
+        </div>
+
+        <div class="payment-step" id="step2">
+            <div class="payment-summary" id="paySummary"></div>
+            <div id="payButtons"></div>
+            <div class="payment-back"><button onclick="goBack()">← Change selection</button></div>
+        </div>
+
+        <div class="thankyou-step" id="step3">
+            <div class="thankyou-heart">💚</div>
+            <div class="thankyou-title">You're amazing</div>
+            <div class="thankyou-text" id="thankText"></div>
+            <button class="thankyou-btn" onclick="resetFlow()">Donate again</button>
+            <button class="thankyou-btn" onclick="closePopup()">Close</button>
+        </div>
+
+        <div class="social-proof">❤️ <strong id="proofCount">${causeConfig.socialProofStart}</strong> people donated while watching</div>
+        <div class="powered-by">Powered by <a href="https://itabs.ai" target="_blank">iTabs</a></div>
+    </div>
+</div>
+
+<script>
+    const CAUSE = ${JSON.stringify(causeConfig)};
+    const SYM = "${s}";
+    let proofCount = CAUSE.socialProofStart;
+    let selected = null;
+
+    function openPopup() {
+        showStep(1);
+        document.getElementById('popupOverlay').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closePopup() {
+        document.getElementById('popupOverlay').classList.remove('show');
+        document.body.style.overflow = '';
+        setTimeout(resetFlow, 300);
+    }
+    function selectImpact(i) {
+        selected = CAUSE.impacts[i];
+        document.querySelectorAll('.impact-card').forEach(c => c.classList.remove('selected'));
+        document.querySelector('.impact-card[data-index="'+i+'"]').classList.add('selected');
+        setTimeout(() => { buildPayment(); showStep(2); }, 200);
+    }
+    function showCustom() {
+        document.getElementById('customCard').style.display = 'none';
+        document.getElementById('customRow').classList.add('show');
+        document.querySelectorAll('.impact-card').forEach(c => c.classList.remove('selected'));
+        setTimeout(() => document.getElementById('customAmt').focus(), 100);
+    }
+    function submitCustom() {
+        const val = parseInt(document.getElementById('customAmt').value);
+        if (val > 0) {
+            selected = { emoji: '💛', description: 'Custom donation', amount: val, stripeLink: '' };
+            buildPayment();
+            showStep(2);
+        }
+    }
+    function buildPayment() {
+        document.getElementById('paySummary').innerHTML =
+            '<span class="p-emoji">'+selected.emoji+'</span>' +
+            '<span class="p-desc">'+selected.description+'</span>' +
+            '<span class="p-amt">'+SYM+selected.amount+'</span>';
+        document.getElementById('payButtons').innerHTML =
+            '<button class="pay-btn pay-apple" onclick="handlePay()"> Apple Pay — '+SYM+selected.amount+'</button>' +
+            '<button class="pay-btn pay-google" onclick="handlePay()">G Pay — '+SYM+selected.amount+'</button>' +
+            '<button class="pay-btn pay-card" onclick="handlePay()">💳 Card — '+SYM+selected.amount+'</button>';
+    }
+    function handlePay() {
+        if (CAUSE.paymentMethod === 'raisely' && CAUSE.raisely) {
+            // Post donation to Raisely API
+            const payBtn = event.target;
+            payBtn.textContent = 'Processing...';
+            payBtn.disabled = true;
+            fetch('https://api.raisely.com/v3/donations', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + CAUSE.raisely.apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: {
+                        amount: selected.amount * 100, // Raisely expects cents
+                        currency: CAUSE.currencySymbol === '$' ? 'AUD' : CAUSE.currencySymbol === '£' ? 'GBP' : 'EUR',
+                        profile: CAUSE.raisely.profile,
+                        type: 'ONLINE',
+                        public: { source: 'watch-and-give', impact: selected.description }
+                    }
+                })
+            }).then(r => r.json()).then(data => {
+                showStep(3);
+                document.getElementById('thankText').textContent =
+                    'Your '+SYM+selected.amount+' will '+selected.description.toLowerCase()+'. Thank you for making a difference.';
+                proofCount++;
+                document.getElementById('proofCount').textContent = proofCount;
+                document.getElementById('cardProof').textContent = proofCount;
+            }).catch(err => {
+                payBtn.textContent = 'Try again';
+                payBtn.disabled = false;
+                console.error('Raisely error:', err);
+            });
+        } else {
+            // Stripe flow
+            if (selected.stripeLink && !selected.stripeLink.includes('REPLACE')) {
+                window.open(selected.stripeLink, '_blank');
+            }
+            showStep(3);
+            document.getElementById('thankText').textContent =
+                'Your '+SYM+selected.amount+' will '+selected.description.toLowerCase()+'. Thank you for making a difference.';
+            proofCount++;
+            document.getElementById('proofCount').textContent = proofCount;
+            document.getElementById('cardProof').textContent = proofCount;
+        }
+    }
+    function goBack() { showStep(1); }
+    function resetFlow() {
+        selected = null;
+        document.querySelectorAll('.impact-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('customCard').style.display = '';
+        document.getElementById('customRow').classList.remove('show');
+        const ci = document.getElementById('customAmt'); if(ci) ci.value = '';
+        showStep(1);
+    }
+    function showStep(n) {
+        document.getElementById('step1').style.display = n===1 ? 'block' : 'none';
+        document.getElementById('step2').className = 'payment-step' + (n===2 ? ' show' : '');
+        document.getElementById('step3').className = 'thankyou-step' + (n===3 ? ' show' : '');
+    }
+    // Social proof ticker
+    setInterval(() => {
+        proofCount++;
+        document.getElementById('proofCount').textContent = proofCount;
+        document.getElementById('cardProof').textContent = proofCount;
+    }, 25000 + Math.random() * 35000);
+<` + `/script>
+</body>
+</html>`;
+
+        // Download
+        if (lastBlob) URL.revokeObjectURL(lastBlob);
+        const blob = new Blob([html], { type: 'text/html' });
+        lastBlob = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const safeName = (state.orgName || 'watch-and-give').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+        a.href = lastBlob;
+        a.download = `${safeName}-widget.html`;
+        a.click();
+
+        // Show instructions
+        const instrEl = document.getElementById('outputInstructions');
+        if (state.paymentMethod === 'raisely') {
+            instrEl.innerHTML = `<p style="margin-bottom:10px">Your widget file has been downloaded with Raisely integration. To go live:</p>
+                <ol style="padding-left:20px">
+                    <li style="margin-bottom:6px">Upload the HTML file to your website</li>
+                    <li style="margin-bottom:6px">Donations will be sent directly to your Raisely campaign</li>
+                    <li style="margin-bottom:6px">Check your <a href="https://admin.raisely.com" target="_blank" style="color:var(--accent);font-weight:600">Raisely Dashboard</a> to see incoming donations</li>
+                    <li>Receipts and tax deductibility are handled by Raisely automatically 🎉</li>
+                </ol>`;
+        } else {
+            instrEl.innerHTML = `<p style="margin-bottom:10px">Your widget file has been downloaded. To go live:</p>
+                <ol style="padding-left:20px">
+                    <li style="margin-bottom:6px">Open <a href="https://dashboard.stripe.com/payment-links" target="_blank" style="color:var(--accent);font-weight:600">Stripe Dashboard</a> → Payment Links</li>
+                    <li style="margin-bottom:6px">Create a payment link for each impact tier amount</li>
+                    <li style="margin-bottom:6px">Open the downloaded HTML file in a text editor</li>
+                    <li style="margin-bottom:6px">Find <code style="background:var(--bg-input);padding:2px 6px;border-radius:4px;font-size:0.8rem">REPLACE_ME</code> and swap in your real Stripe links</li>
+                    <li>Upload the file to your website — done! 🎉</li>
+                </ol>`;
+        }
+        document.getElementById('outputArea').classList.add('show');
+        document.getElementById('outputArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    document.getElementById('generateBtn').addEventListener('click', generateWidget);
+    document.getElementById('downloadAgainBtn').addEventListener('click', generateWidget);
+
+    // ── Init ──
+    renderTiers();
+    updateLogoPreview();
+    updateFullPreview();
+</script>
+</body>
+</html>
